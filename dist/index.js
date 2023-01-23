@@ -6903,7 +6903,7 @@ async function run () {
     const exercisesStatus = ['| Name | Status |', '|---|---|']
 
     for (const exercise of exercises) {
-      const rustSource = fs.readFileSync(path.join(process.env.GITHUB_WORKSPACE, exercise.path))
+      const rustSource = fs.readFileSync(path.join(process.env.GITHUB_WORKSPACE, exercise.path)).toString()
 
       if (rustSource.match('// I AM NOT DONE')) {
         exercisesStatus.push(`| ${exercise.name} | :x: |`)
