@@ -5,15 +5,17 @@ const path = require('path')
 
 async function run () {
   try {
-    core.info(`info file : ${path.join(__dirname, 'info.toml')}`)
-    const tomlString = fs.readFileSync(path.join(__dirname, 'info.toml'))
+    core.startGroup('Parse Info')
+    core.info(`info file : ${path.join(process.env.GITHUB_WORKSPACE, 'info.toml')}`)
+    core.endGroup()
+    const tomlString = fs.readFileSync(path.join(process.env.GITHUB_WORKSPACE, 'info.toml'))
     const tomlObject = toml.parse(tomlString)
     const { exercises } = tomlObject
 
     const exercisesStatus = ['| Name | Status |', '|---|---|']
 
     for (const exercise of exercises) {
-      const rustSource = fs.readFileSync(path.join(__dirname, exercise.path))
+      const rustSource = fs.readFileSync(path.join(process.env.GITHUB_WORKSPACE, exercise.path))
 
       if (rustSource.match('// I AM NOT DONE')) {
         exercisesStatus.push(`| ${exercise.name} | :x: |`)
