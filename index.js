@@ -1,21 +1,22 @@
 const core = require('@actions/core')
 const toml = require('toml')
 const fs = require('fs')
+const path = require('path')
 
-async function run() {
+async function run () {
   try {
-    const tomlString = fs.readFileSync('info.toml')
+    const tomlString = fs.readFileSync(path.join(__dirname, 'info.toml'))
     const tomlObject = toml.parse(tomlString)
-    const {exercises} = tomlObject
+    const { exercises } = tomlObject
 
-    let exercisesStatus = ['| Name | Status |', '|---|---|']
+    const exercisesStatus = ['| Name | Status |', '|---|---|']
 
-    for(const exercise of exercises){
-      const rustSource = fs.readFileSync(exercise.path)
+    for (const exercise of exercises) {
+      const rustSource = fs.readFileSync(path.join(__dirname, exercise.path))
 
-      if(rustSource.match("// I AM NOT DONE")){
+      if (rustSource.match('// I AM NOT DONE')) {
         exercisesStatus.push(`| ${exercise.name} | :x: |`)
-      }else {
+      } else {
         exercisesStatus.push(`| ${exercise.name} | :white_check_mark: |`)
       }
     }
@@ -23,7 +24,7 @@ async function run() {
     const markdownTableText = exercisesStatus.join('\n')
 
     core.info(markdownTableText)
-  }catch(e){
+  } catch (e) {
     core.setFailed(e.message)
   }
 }
