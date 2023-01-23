@@ -6,6 +6,8 @@ const path = require('path')
 async function run () {
   try {
     core.startGroup('Parse Info')
+    core.info(`__dirname: ${__dirname}`)
+    core.info(`WORKSPACE: ${process.env.GITHUB_WORKSPACE}`)
     core.info(`info file : ${path.join(process.env.GITHUB_WORKSPACE, 'info.toml')}`)
     core.endGroup()
     const tomlString = fs.readFileSync(path.join(process.env.GITHUB_WORKSPACE, 'info.toml'))

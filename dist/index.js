@@ -6887,21 +6887,27 @@ var __webpack_exports__ = {};
 const core = __nccwpck_require__(186)
 const toml = __nccwpck_require__(920)
 const fs = __nccwpck_require__(147)
+const path = __nccwpck_require__(17)
 
-async function run() {
+async function run () {
   try {
-    const tomlString = fs.readFileSync('info.toml')
+    core.startGroup('Parse Info')
+    core.info(`__dirname: ${__dirname}`)
+    core.info(`WORKSPACE: ${process.env.GITHUB_WORKSPACE}`)
+    core.info(`info file : ${path.join(process.env.GITHUB_WORKSPACE, 'info.toml')}`)
+    core.endGroup()
+    const tomlString = fs.readFileSync(path.join(process.env.GITHUB_WORKSPACE, 'info.toml'))
     const tomlObject = toml.parse(tomlString)
-    const {exercises} = tomlObject
+    const { exercises } = tomlObject
 
-    let exercisesStatus = ['| Name | Status |', '|---|---|']
+    const exercisesStatus = ['| Name | Status |', '|---|---|']
 
-    for(const exercise of exercises){
-      const rustSource = fs.readFileSync(exercise.path)
+    for (const exercise of exercises) {
+      const rustSource = fs.readFileSync(path.join(process.env.GITHUB_WORKSPACE, exercise.path))
 
-      if(rustSource.match("// I AM NOT DONE")){
+      if (rustSource.match('// I AM NOT DONE')) {
         exercisesStatus.push(`| ${exercise.name} | :x: |`)
-      }else {
+      } else {
         exercisesStatus.push(`| ${exercise.name} | :white_check_mark: |`)
       }
     }
@@ -6909,12 +6915,13 @@ async function run() {
     const markdownTableText = exercisesStatus.join('\n')
 
     core.info(markdownTableText)
-  }catch(e){
+  } catch (e) {
     core.setFailed(e.message)
   }
 }
 
 run()
+
 })();
 
 module.exports = __webpack_exports__;
