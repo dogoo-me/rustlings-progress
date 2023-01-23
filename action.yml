@@ -1,0 +1,10 @@
+name: 'Rustlings Progress'
+description: 'rustling progress updater'
+
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
+
+branding:
+  icon: bar-chart-2
+  color: purple
