@@ -6,6 +6,7 @@ const path = require('path')
 async function run () {
   try {
     const tomlString = fs.readFileSync(path.join(__dirname, 'info.toml'))
+    core.info(`info file : ${path.join(__dirname, 'info.toml')}`)
     const tomlObject = toml.parse(tomlString)
     const { exercises } = tomlObject
 
