@@ -13873,6 +13873,9 @@ async function run () {
 
     core.info('join markdown text')
     const markdownTableText = exercisesStatus.join('\n')
+    core.startGroup('joined table content')
+    core.info(markdownTableText)
+    core.endGroup()
 
     core.info('find README.md')
     const contents = fs.readdirSync(process.env.GITHUB_WORKSPACE)
@@ -13896,7 +13899,7 @@ async function run () {
         path: readme
       })
 
-      let content = data.content || ''
+      let content = Buffer.from(data.content || '', 'base64').toString('utf8')
       core.startGroup('previous content')
       core.info(content)
       core.endGroup()
@@ -13908,13 +13911,16 @@ async function run () {
         const lowerContent = content.substring(to)
         content = `${upperContent}${markdownTableText}${lowerContent}`
       }
-
       payload.content = content
       payload.sha = data.sha
     } else {
       core.info('no readme.md found')
       payload.content = markdownTableText
     }
+
+    core.startGroup('new content')
+    core.info(payload.content)
+    core.endGroup()
 
     const result = await octokit.rest.repos.createOrUpdateFileContents(payload)
 
