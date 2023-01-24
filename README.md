@@ -14,4 +14,5 @@ jobs:
 ```
 
 ## Output
+Only table is the content created by this action.
 ![output image](https://user-images.githubusercontent.com/21301787/214192895-918f8eb4-e05d-4d42-9e07-8a1ba5c0e9d1.png)
