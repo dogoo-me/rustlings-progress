@@ -13910,6 +13910,8 @@ async function run () {
         const upperContent = content.substring(0, from)
         const lowerContent = content.substring(to)
         content = `${upperContent}${markdownTableText}${lowerContent}`
+      } else {
+        content = `${content}\n${markdownTableText}`
       }
       payload.content = content
       payload.sha = data.sha
@@ -13919,6 +13921,11 @@ async function run () {
     }
 
     core.startGroup('new content')
+    core.info(payload.content)
+    core.endGroup()
+
+    core.startGroup('encode content')
+    payload.content = Buffer.from(payload.content).toString('base64')
     core.info(payload.content)
     core.endGroup()
 
