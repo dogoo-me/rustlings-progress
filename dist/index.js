@@ -13897,6 +13897,9 @@ async function run () {
       })
 
       let content = data.content || ''
+      core.startGroup('previous content')
+      core.info(content)
+      core.endGroup()
 
       if (content.includes(MD_START_SIGN) && content.includes(MD_END_SIGN)) {
         const from = content.indexOf(MD_START_SIGN)
@@ -13920,6 +13923,9 @@ async function run () {
     } else {
       core.setFailed(`update readme failed with status code ${result.status}`)
     }
+    core.startGroup('response')
+    core.info(JSON.stringify(result, null, 2))
+    core.endGroup()
   } catch (e) {
     core.error(e)
     core.setFailed(e.message)
