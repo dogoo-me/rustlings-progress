@@ -13909,11 +13909,11 @@ async function run () {
         content = `${upperContent}${markdownTableText}${lowerContent}`
       }
 
-      payload.content = Buffer.from(content).toString('base64')
+      payload.content = content
       payload.sha = data.sha
     } else {
       core.info('no readme.md found')
-      payload.content = Buffer.from(`${markdownTableText}`).toString('base64')
+      payload.content = markdownTableText
     }
 
     const result = await octokit.rest.repos.createOrUpdateFileContents(payload)
