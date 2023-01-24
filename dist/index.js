@@ -13876,48 +13876,44 @@ async function run () {
 
     core.info('find README.md')
     const contents = fs.readdirSync(process.env.GITHUB_WORKSPACE)
-    const readme = contents.find((content) => content.match(/(markdown|MARKDOWN)\.(md|MD)/))
+    const readme = contents.find((content) => content.match(/(readme|README)\.(md|MD)/))
 
     core.info('create octokit client')
     const token = core.getInput('github_token')
     const octokit = github.getOctokit(token)
-    let markdownContent = ''
+    const payload = {
+      owner: github.context.repo.owner,
+      repo: github.context.repo.repo,
+      path: readme || 'README.md',
+      message: 'update readme with rustlings progress'
+    }
 
     core.info('update readme')
     if (readme) {
-      let { content } = await octokit.rest.repos.getContent({
+      const { data } = await octokit.rest.repos.getContent({
         owner: github.context.repo.owner,
         repo: github.context.repo.repo,
         path: readme
       })
 
-      content = content || ''
+      let content = data.content || ''
 
       if (content.includes(MD_START_SIGN) && content.includes(MD_END_SIGN)) {
         const from = content.indexOf(MD_START_SIGN)
         const to = content.indexOf(MD_END_SIGN) + MD_END_SIGN.length
         const upperContent = content.substring(0, from)
         const lowerContent = content.substring(to)
-        markdownContent = `${upperContent}${markdownTableText}${lowerContent}`
+        content = `${upperContent}${markdownTableText}${lowerContent}`
       }
+
+      payload.content = Buffer.from(content).toString('base64')
+      payload.sha = data.sha
     } else {
       core.info('no readme.md found')
-      markdownContent = `${markdownTableText}`
+      payload.content = Buffer.from(`${markdownTableText}`).toString('base64')
     }
 
-    const content = Buffer.from(markdownContent).toString('base64')
-
-    core.startGroup('content')
-    core.info(content)
-    core.endGroup()
-
-    const result = await octokit.rest.repos.createOrUpdateFileContents({
-      owner: github.context.repo.owner,
-      repo: github.context.repo.repo,
-      path: readme || 'README.md',
-      message: 'update readme with rustlings progress',
-      content
-    })
+    const result = await octokit.rest.repos.createOrUpdateFileContents(payload)
 
     if (result.status < 300) {
       core.info(`update readme successfully with status code ${result.status}`)
