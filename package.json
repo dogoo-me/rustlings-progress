@@ -1,6 +1,6 @@
 {
   "name": "rustling-progress",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "github action for rustling progress",
   "author": {
     "email": "master@esllo.com",
