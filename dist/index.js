@@ -13908,7 +13908,7 @@ async function run () {
     const result = await octokit.rest.repos.createOrUpdateFileContents({
       owner: github.context.repo.owner,
       repo: github.context.repo.repo,
-      path: readme,
+      path: readme || 'README.md',
       message: 'update readme with rustlings progress',
       content: markdownContent
     })
@@ -13919,6 +13919,7 @@ async function run () {
       core.setFailed(`update readme failed with status code ${result.status}`)
     }
   } catch (e) {
+    core.error(e)
     core.setFailed(e.message)
   }
 }
