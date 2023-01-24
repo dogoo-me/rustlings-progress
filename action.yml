@@ -1,6 +1,11 @@
 name: 'Rustlings Progress'
 description: 'rustling progress updater'
 
+inputs:
+  github_token:
+    description: 'github token for octokit'
+    required: true
+
 runs:
   using: 'node16'
   main: 'dist/index.js'
