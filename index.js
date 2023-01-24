@@ -64,12 +64,18 @@ async function run () {
       markdownContent = `${markdownTableText}`
     }
 
+    const content = Buffer.from(markdownContent).toString('base64')
+
+    core.startGroup('content')
+    core.info(content)
+    core.endGroup()
+
     const result = await octokit.rest.repos.createOrUpdateFileContents({
       owner: github.context.repo.owner,
       repo: github.context.repo.repo,
       path: readme || 'README.md',
       message: 'update readme with rustlings progress',
-      content: markdownContent
+      content
     })
 
     if (result.status < 300) {
